@@ -1,0 +1,25 @@
+{
+    "success": true,
+    "data": [
+        {
+            "type": "or",
+            "set_id": 14,
+            "children": [
+				{
+                    "id": 3,
+                    "name": "git",
+                    "type": "registry",
+                    "value": [
+                        "HKEY_LOCAL_MACHINE\\SOFTWARE\\GitForWindows",
+                        "",
+                        "2.7.4"
+                    ],
+                    "set_id": 16
+                }
+				
+				
+                
+            ]
+        }
+    ]
+}

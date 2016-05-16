@@ -1,0 +1,11 @@
+﻿  stdafx.cpp
+  ConsoleApplication1.cpp
+c:\users\user\documents\visual studio 2015\projects\consoleapplication1\consoleapplication1\consoleapplication1.cpp(138): warning C4091: 'typedef ': ignored on left of 'OBJECT_INFORMATION_CLASS' when no variable is declared
+c:\users\user\documents\visual studio 2015\projects\consoleapplication1\consoleapplication1\consoleapplication1.cpp(196): warning C4018: '<': signed/unsigned mismatch
+c:\users\user\documents\visual studio 2015\projects\consoleapplication1\consoleapplication1\consoleapplication1.cpp(195): warning C4778: 'printf' : unterminated format string '%l\n'
+c:\users\user\documents\visual studio 2015\projects\consoleapplication1\consoleapplication1\consoleapplication1.cpp(195): warning C4474: 'printf' : too many arguments passed for format string
+  c:\users\user\documents\visual studio 2015\projects\consoleapplication1\consoleapplication1\consoleapplication1.cpp(195): note: placeholders and their parameters expect 0 variadic arguments, but 1 were provided
+c:\users\user\documents\visual studio 2015\projects\consoleapplication1\consoleapplication1\consoleapplication1.cpp(194): warning C4101: 'pom': unreferenced local variable
+c:\users\user\documents\visual studio 2015\projects\consoleapplication1\consoleapplication1\consoleapplication1.cpp(200): warning C4101: 'size': unreferenced local variable
+c:\users\user\documents\visual studio 2015\projects\consoleapplication1\consoleapplication1\consoleapplication1.cpp(306): warning C4018: '<': signed/unsigned mismatch
+  ConsoleApplication1.vcxproj -> c:\users\user\documents\visual studio 2015\Projects\ConsoleApplication1\Debug\ConsoleApplication1.exe

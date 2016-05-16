@@ -1,0 +1,36 @@
+{
+    "success": true,
+    "data": [
+        {
+            "id": 3,
+            "name": "mutex",
+            "type": "mutex-name",
+            "value": [
+                "semaphore"
+            ]
+        },
+        {
+            "type": "and",
+            "name": "#6",
+            "id": 6,
+            "children": [
+                {
+                    "id": 7,
+                    "name": "dns",
+                    "type": "dns",
+                    "value": [
+                        "www.sme.sk"
+                    ]
+                },
+                {
+                    "id": 8,
+                    "name": "cert subject",
+                    "type": "cert-dom",
+                    "value": [
+                        "www.google.com"
+                    ]
+                }
+            ]
+        }
+    ]
+}
