@@ -1,0 +1,259 @@
+poznámka \ v hľadaných výrazoch
+json formát podporuje zadanie \, ale zrejme ho aj na niečo používa ako špeciálny znak, takže ak chceme zadať 
+musíme zadať \\ 
+teraz ak chceme zadať napríklad cestu k súboru bude to 
+C:\\kaviaren\\kavicka.txt
+ak chceme zadať regulárny výraz, a chceme v ňom zadať \, potrebujeme ho escapenuť, čiže potrebujeme zadať \\,
+v json formáte to teda bude \\\\
+takže napríklad regulárny výraz .*\.*\\cajicek\.txt
+bude v json formáte .*\\.*\\\\cajicek\\.txt
+
+hľadanie podľa mena certifikačnej autority - pozerá len meno alternatívne mená nie
+{
+  "id": 49,
+  "name": "_certcaname",
+  "type": "cert-ca",
+  "value": [
+    "authority name"
+  ]
+}
+
+hľadanie podľa mena domény, na ktorú je certifikát vystavený - pozerá meno a alternatívne mená typu CERT_ALT_NAME_DNS
+{
+  "id": 49,
+  "name": "_certcaname",
+  "type": "cert-dom",
+  "value": [
+    "domain name"
+  ]
+}
+
+hľadanie spojenia podľa ip adresy
+{
+  "id": 44,
+  "name": "_connectionip",
+  "type": "network-ip",
+  "value": [
+    "12.34.56.78"
+  ]
+}
+
+hľadanie podľa domény - presné meno
+{
+  "id": 44,
+  "name": "_connectionip",
+  "type": "network-name",
+  "value": [
+    "domain.name.com"
+  ]
+}
+
+hľadanie podľa domény - regulárny výraz
+{
+  "id": 44,
+  "name": "_connectionip",
+  "type": "network-regex",
+  "value": [
+    "domain regex"
+  ]
+}
+
+hľadanie dns záznamu - presné meno
+{
+  "id": 47,
+  "name": "_dnsentry",
+  "type": "dns",
+  "value": [
+    "dns entry"
+  ]
+}
+
+hľadanie mutanta podľa mena
+{
+  "id": 43,
+  "name": "_mutexname",
+  "type": "mutex-name",
+  "value": [
+    "name"
+  ]
+}
+
+hľadanie procesu podľa hashu jeho spustiteľného súboru
+prvá hodnota je typ hashu a druhá je hash
+typ hashu môže byť sha1, sha256, md5
+{
+  "id": 42,
+  "name": "_processhash",
+  "type": "process-hash",
+  "value": [
+    "sha1",
+    "hash"
+  ]
+}
+
+hľadanie procesu podľa jeho mena
+{
+  "id": 40,
+  "name": "_processname",
+  "type": "process-name",
+  "value": [
+    "explorer.exe"
+  ]
+}
+
+hľadanie procesu podľa regulárneho výrazu
+{
+  "id": 40,
+  "name": "_processname",
+  "type": "process-regex",
+  "value": [
+    "explorer.exe"
+  ]
+}
+
+hľadanie súboru - presná hodnota
+prvá hodnota je cesta, druhá meno súboru, tretia typ hashu, štvrtá hash
+hociktorá hodnota môže byť vynechaná, vtedy sa hľadá len podľa ostatných
+typ hashu: sha1, sha256, md5
+
+hľadá súbor C:\Program Files\Internet Explorer\iexplore.exe
+s md5 hashom 87b6d4637841106309259c36b77ec42f
+{
+  "id": 1,
+  "name": "explorer",
+  "type": "file",
+  "value": [
+    "C:\\Program Files\\Internet Explorer",
+    "iexplore.exe",
+    "md5",
+    "87b6d4637841106309259c36b77ec42f"
+  ],
+  "set_id": 15
+}
+
+hľadá súbor v priečinku C:\Program Files\Internet Explorer\ s ľubovolným menom a
+s md5 hashom 87b6d4637841106309259c36b77ec42f
+{
+  "id": 1,
+  "name": "explorer",
+  "type": "file",
+  "value": [
+    "C:\\Program Files\\Internet Explorer",
+    "",
+    "md5",
+    "87b6d4637841106309259c36b77ec42f"
+  ],
+  "set_id": 15
+}
+
+hľadá súbo iexplore.exe s ľubovoľnou cestou a ľubovolným hashom
+{
+  "id": 1,
+  "name": "explorer",
+  "type": "file",
+  "value": [
+    "",
+    "iexplore.exe",
+    "",
+    ""
+  ],
+  "set_id": 15
+}
+
+hľadanie súboru - regulárny výraz
+3 hodnoty, cesta, typ hashu, hash
+typ hashu: sha1, sha256, md5
+v hodnote cesta je regulárny výraz v ktorom je zakódovaná cesta aj s názvom súboru
+
+hľadá v priečinku somepath\Users\Music\ súbor končiaci na .mp3 s sha256 hashom 
+kde somepath matchuje .* regex takže môže byť lubovoľná
+[^\\\\] zabezpečí aby sa nevošlo do subfoldrov - 4x \ pozri hore vysvetlivky
+{
+  "id": 2,
+  "name": "music",
+  "type": "file-regex",
+  "value": [
+    ".*\\\\Users\\\\Music\\\\[^\\\\]*\\.mp3",
+    "sha256",
+    "87b6d4637841106309259c36b77ec42f"
+  ],
+  "set_id": 18
+}
+
+hľadá ľubovolný súbor v priečinku somepath\Users\Music
+kde somepath matchuje .* regex takže môže byť lubovoľná
+{
+  "id": 2,
+  "name": "music",
+  "type": "file-regex",
+  "value": [
+    ".*\\\\Users\\\\Music\\\\[^\\\\]*",
+    "",
+    ""
+  ],
+  "set_id": 18
+}
+
+
+prehľadávanie Windows registry - presný názov
+
+3 hodnoty key path, názov hodnoty, hodnota
+key path nemôže byť v skrátenom formáte napr. HKLM\\SOFTWARE ale musí byť v napísané celé meno kľúča
+ak je prvá hodnota prázdna hľadá podľa zvyšných dvoch
+ak je prázdna druhá hodnota, ale je nastavená tretia porovnáva hodnoty,
+dôvodom je Default value ktorú má kľúč, nemá žiadne meno, ale môže tam byť niečo nastavené
+
+hľadá kľúč "HKEY_LOCAL_MACHINE\\SOFTWARE\\GitForWindows", ktorý obsahuje hodnotu s menom Version a hodnotou 2.7.4
+{
+  "id": 3,
+  "name": "git",
+  "type": "registry",
+  "value": [
+    "HKEY_LOCAL_MACHINE\\SOFTWARE\\GitForWindows",
+    "Version",
+    "2.7.4"
+  ],
+  "set_id": 16
+}
+
+hľadá ľubovolný kľúč s hodnotou s menom Version a hodnotou 2.7.4
+{
+  "id": 3,
+  "name": "git",
+  "type": "registry",
+  "value": [
+    "",
+    "Version",
+    "2.7.4"
+  ],
+  "set_id": 16
+}
+
+hľadá ľubovolný kľúč s Default hodnotou 2.7.4
+{
+  "id": 3,
+  "name": "git",
+  "type": "registry",
+  "value": [
+    "",
+    "",
+    "2.7.4"
+  ],
+  "set_id": 16
+}
+
+hľadanie Windows registry - regulárny výraz
+3 hodnoty - regulárny výraz pre key path, regulárny výraz pre názov hodnoty, hodnota
+
+{
+  "id": 4,
+  "name": "jdk",
+  "type": "registry-regex",
+  "value": [
+    "HKEY_LOCAL_MACHINE\\\\SOFTWARE\\\\JavaSoft\\\\Java Development Kit\\\\.*",
+    "Java.*",
+    "abcd"
+  ],
+  "set_id": 17
+}
+
