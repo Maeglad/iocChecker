@@ -17,12 +17,21 @@
 #include <string>
 #include <sstream>
 #include <queue>
+#include <codecvt>
+#include <io.h>
+#include <fcntl.h>
+#include <tchar.h>
+#include <locale>
+
 using namespace std;
 
 void makeLog(vector<Node*> nodes, string testName, string url, string org, std::vector<FailInfo> fails);
 void checkSystem(vector<Node*> nodes, bool checkIpv6, std::vector<FailInfo>* fails);
 int main()
 {
+	// dolezita poznamka !!!! ak sa nastavi output console do tohto modu tak sa nesmie pouzivat cout aj wcout zaroven
+	// moze sa pouzivat len jedna funkcia inak to padne
+	_setmode(_fileno(stdout), _O_U16TEXT);
 
 	vector<Node*> nodes;
 	IocParser iocp;
@@ -30,7 +39,7 @@ int main()
 
 	ifstream input;
 	input.open("config.cfg", ifstream::in);
-
+	
 	input >> op;
 
 	if (strcmp(op.c_str(), "server") == 0) {
@@ -49,15 +58,16 @@ int main()
 		string s = "./iocs/";
 		s.append(setName.c_str());
 		s.append(".txt");
-		cout << s.c_str() << endl;
+		//wcout << s.c_str() << endl;
 		nodes = iocp.parseFile(s.c_str());
+		
 	}
 
 	string ipv6Toggle;
 	input >> ipv6Toggle;
 	input >> org;
 	if (nodes.empty()) {
-		cout << "Failed to fetch IOCs from file." << endl;
+		wcout << L"Failed to fetch IOCs from file." << endl;
 		return 1;
 	}
 
@@ -137,9 +147,11 @@ void makeLog(vector<Node*> nodes, string testName, string url, string org, std::
 	s.append(testName.c_str());
 	s.append(".log");
 	wofstream file;
+	jsoncons::woutput_format output;
+	output.escape_all_non_ascii(true);
 	wcout << jsoncons::pretty_print(jsonbuilder);
 	file.open(s, wofstream::out | wofstream::trunc);
-	file << jsoncons::pretty_print(jsonbuilder);
+	file << jsoncons::pretty_print(jsonbuilder, output);
 	file.close();
 	if (url.compare("") != 0) {
 		CurlModule cMod;
@@ -155,7 +167,9 @@ struct NodeComparator {
 
 void checkSystem(vector<Node*> nodes, bool checkIpv6, std::vector<FailInfo>* fails) {
 	priority_queue<Node*, vector<Node*>, NodeComparator> nodeQueue;
-	cout << "checking" << endl;
+	
+
+
 	for (int i = 0; i < nodes.size(); ++i) {
 		if (nodes[i]->priority < 10) {
 			nodeQueue.push(nodes[i]);
@@ -174,7 +188,7 @@ void checkSystem(vector<Node*> nodes, bool checkIpv6, std::vector<FailInfo>* fai
 		}
 		if (priority == 1) {
 			
-			cout << "Checking certificates." << endl;
+			wcout << L"Checking certificates." << endl;
 			vector<CERT_SEARCH_DATA> searchData;
 			vector<FindData> found;
 			found.clear();
@@ -203,7 +217,7 @@ void checkSystem(vector<Node*> nodes, bool checkIpv6, std::vector<FailInfo>* fai
 
 		if (priority == 2) {
 			
-			cout << "Checking connections." << endl;
+			wcout << L"Checking connections." << endl;
 			vector<CONNECTION_SEARCH_DATA> searchData;
 			vector<FindData> found;
 			found.clear();
@@ -229,7 +243,7 @@ void checkSystem(vector<Node*> nodes, bool checkIpv6, std::vector<FailInfo>* fai
 
 		}
 		if (priority == 3) {
-			cout << "Checking DNS cache." << endl;
+			wcout << L"Checking DNS cache." << endl;
 			vector<DNS_SEARCH_DATA> searchData;
 			vector<FindData> found;
 			found.clear();
@@ -257,7 +271,7 @@ void checkSystem(vector<Node*> nodes, bool checkIpv6, std::vector<FailInfo>* fai
 
 		if (priority == 4) {
 			
-			cout << "Checking mutexes." << endl;
+			wcout << L"Checking mutexes." << endl;
 			vector<MUTEX_SEARCH_DATA> searchData;
 			vector<FindData> found;
 			found.clear();
@@ -284,7 +298,7 @@ void checkSystem(vector<Node*> nodes, bool checkIpv6, std::vector<FailInfo>* fai
 
 		if (priority == 5) {
 			
-			cout << "Checking processes." << endl;
+			wcout << L"Checking processes." << endl;
 			vector<PROCESS_SEARCH_DATA> searchData;
 			vector<FindData> found;
 			found.clear();
@@ -311,7 +325,7 @@ void checkSystem(vector<Node*> nodes, bool checkIpv6, std::vector<FailInfo>* fai
 
 		if (priority == 8) {
 			
-			cout << "Checking registry." << endl;
+			wcout << L"Checking registry." << endl;
 			vector<REGISTRY_SEARCH_DATA> searchData;
 			vector<FindData> found;
 			found.clear();
@@ -341,7 +355,7 @@ void checkSystem(vector<Node*> nodes, bool checkIpv6, std::vector<FailInfo>* fai
 
 		if (priority == 9) {
 			
-			cout << "Checking files." << endl;
+			wcout << L"Checking files." << endl;
 			vector<FILE_SEARCH_DATA> searchData;
 			vector<FindData> found;
 			found.clear();

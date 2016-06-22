@@ -67,7 +67,7 @@ int ProcessModule::checkProcesses(std::vector<PROCESS_SEARCH_DATA> searchData, s
 
 	
 	if (ret == 1) {
-		std::cout << "Cant get privileges" << std::endl;
+		std::wcout << L"Cant get privileges" << std::endl;
 
 	}
 	while (spi->NextEntryOffset) {
@@ -99,10 +99,12 @@ int ProcessModule::checkProcesses(std::vector<PROCESS_SEARCH_DATA> searchData, s
 					continue;
 				}
 			}
+		
 			if ((searchData[i].dataId == PROCESS_HASH_SHA256_DATA) ||
+				(searchData[i].dataId == PROCESS_HASH_SHA1_DATA) ||
 				(searchData[i].dataId == PROCESS_HASH_MD5_DATA)) {
 				DWORD pid = PtrToUlong(spi->UniqueProcessId);
-
+				
 				HANDLE processHandle = OpenProcess(PROCESS_QUERY_INFORMATION, false, pid);
 				LPWSTR ibuffer = new WCHAR[32767];
 				LPWSTR longName = new WCHAR[32767];
@@ -125,13 +127,16 @@ int ProcessModule::checkProcesses(std::vector<PROCESS_SEARCH_DATA> searchData, s
 					}
 				}
 
-				ret = GetLongPathNameW(path.c_str(), longName, 256);
-
+				ret = GetLongPathNameW(path.c_str(), longName, 32767);
+				
 				if (ret == 0) {
 					// ERROR
 					std::wcout << "Cannot get process filename: " << spi->ImageName.Buffer << std::endl;
 				}
 				else {
+					
+					
+
 					HashModule hashModule;
 					std::wstring hash;
 					if (searchData[i].dataId == PROCESS_HASH_MD5_DATA) {
@@ -143,6 +148,7 @@ int ProcessModule::checkProcesses(std::vector<PROCESS_SEARCH_DATA> searchData, s
 					if (searchData[i].dataId == PROCESS_HASH_SHA1_DATA) {
 						hashModule.calc_sha1W(longName, &hash);
 					}
+					
 					if (wcscmp(hash.c_str(), searchData[i].data.c_str()) == 0) {
 						FindData fd;
 						fd.id = i;
@@ -186,7 +192,7 @@ std::wstring ProcessModule::getProcessPath(DWORD pid) {
 	for (int i = 0; i < volumes.size(); ++i) {
 		
 		DWORD ret = QueryDosDeviceW(volumes[i].substr(0, volumes[i].size() - 1).c_str(), dosDevice, 256);
-		if (ret == 0) { std::cout << GetLastError() << std::endl; }
+		if (ret == 0) { std::wcout << L"Error QueryDosDevice in ProcessModule: " << GetLastError() << std::endl; }
 		
 		std::wstring device = dosDevice;
 		if (kernelPath.find(device.c_str()) != std::string::npos) {

@@ -23,18 +23,18 @@
 void OpenConnectionModule::checkConnections(std::vector<CONNECTION_SEARCH_DATA> searchData, std::vector<FindData>* found, bool checkIpv6) {
 	WSADATA wsadata;
 	WSAStartup(MAKEWORD(2, 2), &wsadata);
-	std::cout << "TcpIPv4" << std::endl;
+	std::wcout << L"TcpIPv4" << std::endl;
 	checkTcpIpv4Connections(searchData, found);
-	std::cout << "UdpIPv4" << std::endl;
+	std::wcout << L"UdpIPv4" << std::endl;
 	checkUdpIpv4Connections(searchData, found);
 	if (checkIpv6) {
-		std::cout << "UdpIPv6" << std::endl;
+		std::wcout << L"UdpIPv6" << std::endl;
 		checkUdpIpv6Connections(searchData, found);
-		std::cout << "TcpIPv6" << std::endl;
+		std::wcout << L"TcpIPv6" << std::endl;
 		checkTcpIpv6Connections(searchData, found);
 	}
 	else {
-		std::cout << "Ipv6 skiped" << std::endl; 
+		std::wcout << L"Ipv6 skiped" << std::endl; 
 	}
 	WSACleanup();
 }
@@ -70,7 +70,7 @@ void OpenConnectionModule::checkTcpIpv4Connections(std::vector<CONNECTION_SEARCH
 		PMIB_TCPTABLE pTcpTable = (PMIB_TCPTABLE)malloc(dwSize);
 
 		if (GetTcpTable(pTcpTable, &dwSize, true) != NO_ERROR) {
-			std::cout << "ERROR" << std::endl;
+			std::wcout << L"ERROR" << std::endl;
 			return;
 		}
 
@@ -206,7 +206,7 @@ void OpenConnectionModule::checkTcpIpv4Connections(std::vector<CONNECTION_SEARCH
 		typeGetNameInfoW GetNameInfoW = (typeGetNameInfoW)GetProcAddress(LoadLibraryW(L"Ws2_32.dll"), "GetNameInfoW");
 		typeGetExtendedTcpTable GetExtendedTcpTable = (typeGetExtendedTcpTable)GetProcAddress(LoadLibrary(L"iphlpapi.dll"), "GetExtendedTcpTable");
 		if (GetNameInfoW == NULL) {
-			std::cout << "ERROR";
+			std::wcout << L"ERROR";
 			return;
 		}
 		DWORD dwSize = 0;
@@ -302,7 +302,7 @@ void OpenConnectionModule::checkTcpIpv4Connections(std::vector<CONNECTION_SEARCH
 						GetNameInfoW((struct sockaddr *) &sAddrIn, sizeof(sockaddr_in), hostNameW, NI_MAXHOST, serviceNameW, NI_MAXSERV, NI_NUMERICSERV);
 						resolved = true;
 					}
-					std::wcout << hostNameW << std::endl;
+					//std::wcout << hostNameW << std::endl;
 					if (searchData[i].data.compare(hostNameW) == 0) {
 						FindData fd;
 						fd.id = i;
@@ -350,7 +350,7 @@ void OpenConnectionModule::checkTcpIpv6Connections(std::vector<CONNECTION_SEARCH
 		AllocateAndGetTcpExTableFromStack = (typeAllocateAndGetTcpExTableFromStack)GetProcAddress(LoadLibraryA("iphlpapi.dll"), "AllocateAndGetTcpExTableFromStack");
 
 		if (AllocateAndGetTcpExTableFromStack == NULL) {
-			std::cout << "ERROR" << std::endl;
+			std::wcout << L"ERROR" << std::endl;
 			return;
 		}
 
@@ -490,7 +490,7 @@ void OpenConnectionModule::checkTcpIpv6Connections(std::vector<CONNECTION_SEARCH
 		typeGetNameInfoW GetNameInfoW = (typeGetNameInfoW)GetProcAddress(LoadLibraryW(L"Ws2_32.dll"), "GetNameInfoW");
 		typeGetExtendedTcpTable GetExtendedTcpTable = (typeGetExtendedTcpTable)GetProcAddress(LoadLibrary(L"iphlpapi.dll"), "GetExtendedTcpTable");
 		if (GetNameInfoW == NULL) {
-			std::cout << "ERROR";
+			std::wcout << L"ERROR";
 			return;
 		}
 
@@ -700,7 +700,7 @@ void OpenConnectionModule::checkUdpIpv4Connections(std::vector<CONNECTION_SEARCH
 
 		typeGetNameInfoW GetNameInfoW = (typeGetNameInfoW)GetProcAddress(LoadLibraryW(L"Ws2_32.dll"), "GetNameInfoW");
 		if (GetNameInfoW == NULL) {
-			std::cout << "ERROR";
+			std::wcout << L"ERROR";
 			return;
 		}
 
@@ -785,7 +785,7 @@ void OpenConnectionModule::checkUdpIpv6Connections(std::vector<CONNECTION_SEARCH
 		typeAllocateAndGetUdpExTableFromStack AllocateAndGetUdpExTableFromStack = NULL;
 		AllocateAndGetUdpExTableFromStack = (typeAllocateAndGetUdpExTableFromStack)GetProcAddress(LoadLibraryA("iphlpapi.dll"), "AllocateAndGetUdpExTableFromStack");
 		if (AllocateAndGetUdpExTableFromStack == NULL) {
-			std::cout << "ERROR" << std::endl;
+			std::wcout << L"ERROR" << std::endl;
 			return;
 		}
 
@@ -868,20 +868,20 @@ void OpenConnectionModule::checkUdpIpv6Connections(std::vector<CONNECTION_SEARCH
 	else {
 		typeGetNameInfoW GetNameInfoW = (typeGetNameInfoW)GetProcAddress(LoadLibraryW(L"Ws2_32.dll"), "GetNameInfoW");
 		if (GetNameInfoW == NULL) {
-			std::cout << "ERROR";
+			std::wcout << L"ERROR";
 			return;
 		}
 
 		typeGetExtendedUdpTable GetExtendedUdpTable = (typeGetExtendedUdpTable)GetProcAddress(LoadLibraryW(L"Iphlpapi.dll"), "GetExtendedUdpTable");
 		if (GetExtendedUdpTable == NULL) {
-			std::cout << "ERROR";
+			std::wcout << L"ERROR";
 			return;
 		}
 		DWORD dwSize = 0;
 		GetExtendedUdpTable(NULL, &dwSize, true, AF_INET6, UDP_TABLE_BASIC, 0);
 		PMIB_UDP6TABLE pUdp6Table = (PMIB_UDP6TABLE)malloc(dwSize);
 		if (GetExtendedUdpTable(pUdp6Table, &dwSize, true, AF_INET6, UDP_TABLE_BASIC, 0) != NO_ERROR) {
-			std::wcout << "ERROR udpIpv6" << std::endl;
+			std::wcout << L"ERROR udpIpv6" << std::endl;
 			return;
 		}
 

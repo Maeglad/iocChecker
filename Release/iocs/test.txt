@@ -2,34 +2,26 @@
     "success": true,
     "data": [
         {
+            "type": "and",
+            "name": "#3",
             "id": 3,
-            "name": "mutex",
-            "type": "mutex-name",
-            "value": [
-                "semaphore"
+            "children": [
+                {
+                    "id": 5,
+                    "name": "explorer process",
+                    "type": "process-name",
+                    "value": [
+                        "explorer.exe"
+                    ]
+                }
             ]
         },
         {
-            "type": "and",
-            "name": "#6",
             "id": 6,
-            "children": [
-                {
-                    "id": 7,
-                    "name": "dns",
-                    "type": "dns",
-                    "value": [
-                        "www.sme.sk"
-                    ]
-                },
-                {
-                    "id": 8,
-                    "name": "cert subject",
-                    "type": "cert-dom",
-                    "value": [
-                        "www.google.com"
-                    ]
-                }
+            "name": "google",
+            "type": "process-name",
+            "value": [
+                "www.google.\u010com"
             ]
         }
     ]

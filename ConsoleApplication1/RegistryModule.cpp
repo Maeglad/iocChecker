@@ -500,7 +500,7 @@ int RegistryModule::GetPrivileges() {
 
 	if (!SetPrivilege(hToken, SE_TAKE_OWNERSHIP_NAME, TRUE))
 	{
-		std::cout << "Cannot aquire privilege" << std::endl;
+		std::wcout << L"Cannot aquire privilege" << std::endl;
 		CloseHandle(hToken);
 		return 1;
 	}
@@ -519,7 +519,7 @@ int RegistryModule::DropPrivileges() {
 
 	if (!SetPrivilege(hToken, SE_TAKE_OWNERSHIP_NAME, FALSE))
 	{
-		std::cout << "Cannot drop privilege" << std::endl;
+		std::wcout << L"Cannot drop privilege" << std::endl;
 		CloseHandle(hToken);
 		return 1;
 	}

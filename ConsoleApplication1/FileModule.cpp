@@ -87,6 +87,12 @@ int FileModule::checkForFiles(std::vector<FILE_SEARCH_DATA> searchData, std::vec
 	}
 	
 	if (stop)return 0;
+
+	for (int i = 0; i < volumes.size(); ++i) {
+		volumes[i].pop_back();
+		//std::wcout << volumes[i] << std::endl;
+	}
+
 	for (int i = 0; i < volumes.size(); ++i) {
 		searchFiles(searchData, volumes[i], found);
 	}
@@ -98,7 +104,8 @@ int FileModule::searchFiles(std::vector<FILE_SEARCH_DATA> searchData, std::wstri
 
 	WIN32_FIND_DATAW findFileData;
 	HANDLE hFind;
-	std::wstring path = currpath + L"*";
+	std::wstring path = currpath + L"\\*";
+	//sstd::wcout << currpath << std::endl;
 	hFind = FindFirstFileW(path.c_str(), &findFileData);
 	if (hFind == INVALID_HANDLE_VALUE)
 	{
@@ -123,9 +130,16 @@ int FileModule::searchFiles(std::vector<FILE_SEARCH_DATA> searchData, std::wstri
 							FindData fd;
 							fd.id = i;
 							std::wstring ws = currpath;
-							//ws.append(L"\\");
+							//std::wcout << currpath << std::endl;
+							ws.append(L"\\");
 							ws.append(searchData[i].name);
 							fd.data.push_back(ws);
+							
+
+							//std::wstring wout;
+							
+							//hashModule->calc_sha256W(ws, &wout);
+							//std::wcout << wout << std::endl;
 							ws = L"";
 							fd.data.push_back(ws);
 							found->push_back(fd);
@@ -147,6 +161,7 @@ int FileModule::searchFiles(std::vector<FILE_SEARCH_DATA> searchData, std::wstri
 							if (searchData[i].hashType == FILE_HASH_SHA256_DATA) {
 								hashModule->calc_sha256W(path, &hash);
 							}
+							
 							if (searchData[i].hash.compare(hash) == 0) {
 								searchData[i].found = true;
 								FindData fd;
@@ -166,9 +181,12 @@ int FileModule::searchFiles(std::vector<FILE_SEARCH_DATA> searchData, std::wstri
 
 				std::wstring comparePath;
 				comparePath.append(currpath);
+				comparePath.append(L"\\");
 				comparePath.append(findFileData.cFileName);
 				if ((std::regex_match(comparePath.c_str(), regPath)) ||
-					(searchData[i].path.compare(L"") == 0)) {
+					(searchData[i].path.compare(L"") == 0) ||
+					(std::regex_match(findFileData.cFileName, regPath))
+					) {
 					//check hash
 					if (searchData[i].hash.compare(L"") == 0) {
 
@@ -179,6 +197,7 @@ int FileModule::searchFiles(std::vector<FILE_SEARCH_DATA> searchData, std::wstri
 						ws.append(findFileData.cFileName);
 						fd.data.push_back(ws);
 						ws = L"";
+
 						fd.data.push_back(ws);
 						found->push_back(fd);
 					}
@@ -199,6 +218,8 @@ int FileModule::searchFiles(std::vector<FILE_SEARCH_DATA> searchData, std::wstri
 						if (searchData[i].hashType == FILE_HASH_SHA256_DATA) {
 							hashModule->calc_sha256W(path, &hash);
 						}
+						//std::wcout << path << std::endl;
+						//std::wcout << hash << std::endl << searchData[i].hash << std::endl;
 						if (searchData[i].hash.compare(hash) == 0) {
 							FindData fd;
 							fd.id = i;
@@ -216,7 +237,7 @@ int FileModule::searchFiles(std::vector<FILE_SEARCH_DATA> searchData, std::wstri
 			(wcscmp(L"..", findFileData.cFileName) != 0) &&
 			(wcscmp(L".", findFileData.cFileName) != 0))
 		{
-			searchFiles(searchData, currpath + findFileData.cFileName + L"\\", found);
+			searchFiles(searchData, currpath + L"\\" + findFileData.cFileName, found);
 		}
 
 

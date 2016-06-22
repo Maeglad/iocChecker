@@ -7,7 +7,11 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <curl/curl.h>
-
+#include <codecvt>
+#include <io.h>
+#include <fcntl.h>
+#include <tchar.h>
+#include <locale>
 
 size_t CurlModule::write_data(void *ptr, size_t size, size_t nmemb, FILE *stream) {
 	size_t written = fwrite(ptr, size, nmemb, stream);
@@ -17,29 +21,41 @@ size_t CurlModule::write_data(void *ptr, size_t size, size_t nmemb, FILE *stream
 int CurlModule::uploadDataToServer(std::string url, std::string setName) {
 	CURL *curl;
 	CURLcode res;
-	std::wifstream dataIn;
-	std::wstring path;
-	path.append(L"./logs/");
+	std::ifstream dataIn;
+	std::string path;
+	path.append("./logs/");
 	path.append(setName.begin(), setName.end());
-	path.append(L".log");
+	path.append(".log");
 	dataIn.open(path.c_str(), std::wifstream::in);
-	jsoncons::wjson root;
-	dataIn >> root;
+	std::string test, ioc;
+
+	while (dataIn.eof() == false) { 
+		dataIn >> test; 
+		ioc.append(test);
+	}
+	//std::cout << ioc;
+	//return 0;
+	
+	//jsoncons::wjson root;
+	//dataIn >> root;
 
 	curl = curl_easy_init();
 	if (curl) {
-		FILE* fd;
+		//std::wstring data = root.as_string();
+		//int size_needed = WideCharToMultiByte(CP_UTF8, 0, &data[0], (int)data.size(), NULL, 0, NULL, NULL);
+		//std::string strTo(size_needed, 0);
 		
-		char* data = new char[root.as_string().size() * 4];
-		int size = wcstombs(data, root.as_string().c_str(), root.as_string().size() * 4);
+		//WideCharToMultiByte(CP_UTF8, 0, &data[0], (int)data.size(), &strTo[0], size_needed, NULL, NULL);
+		
 
-		data = curl_easy_escape(curl, data, size);
-
-		std::string connect;
+		//strTo = curl_easy_escape(curl, strTo.c_str(), strTo.size());
+		//std::cout << strTo << " " << size_needed;
+		std::string connect, post;
 		connect.append(url);
-		connect.append("?controller=client&action=upload&report=");
-		connect.append(data);
-
+		post.append("controller=client&action=upload&report=");
+		post.append(ioc);
+		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, post.c_str());
+		//curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, size*4);
 		curl_easy_setopt(curl, CURLOPT_URL, connect.c_str());     
 		char buffer[CURL_ERROR_SIZE];
 
@@ -61,7 +77,7 @@ int CurlModule::uploadDataToServer(std::string url, std::string setName) {
 		curl_easy_setopt(curl, CURLOPT_USE_SSL, CURLUSESSL_ALL);
 		
 		res = curl_easy_perform(curl);
-		delete data;
+	//	delete data;
 		if (res != CURLE_OK) {
 			printf("%s", curl_easy_strerror(res));
 			printf("\n%s", buffer);
@@ -89,11 +105,12 @@ int CurlModule::fetchDataFromServer(std::string url, std::string setName) {
 		s.append(".txt");
 		fp = fopen(s.c_str(), "w");
 
-		std::string connect;
+		std::string connect, post;
 		connect.append(url);
-		connect.append("?controller=client&action=request&name=");
-		connect.append(setName);
-
+		
+		post.append("controller=client&action=request&name=");
+		post.append(setName);
+		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, post.c_str());
 		curl_easy_setopt(curl, CURLOPT_URL, connect.c_str());       
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);

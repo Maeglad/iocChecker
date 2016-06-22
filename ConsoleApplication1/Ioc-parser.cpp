@@ -3,7 +3,9 @@
 #include <fstream>
 #include <iostream>
 #include <cstdlib>
-
+#include <io.h>
+#include <fcntl.h>
+#include <codecvt>
 using jsoncons::wjson;
 using namespace std;
 
@@ -13,21 +15,24 @@ std::vector<Node*> IocParser::parseFile(std::string filePath) {
 	wjson root;
 	dataIn >> root;
 	vector<Node*> nodes;
-
+	
+	
+	//std::wcout << jsoncons::pretty_print(root);
+	
 	wstring success = root.get(L"success").as<std::wstring>();
 	if (success.compare(L"true") == 0) {
 	}
 	else { return nodes; }
 
-
+	
 	Node* rootNode = new Node;
 	rootNode->iocId = 0;
 	rootNode->priority = 11;
 	rootNode->index = 0;
 	rootNode->found = false;
 	nodes.push_back(rootNode);
-
-
+	
+	
 
 	wjson data = root.get(L"data", L"");
 
@@ -47,7 +52,7 @@ Node* IocParser::parseNode(jsoncons::wjson data, vector<Node*>* nodes) {
 	wstring type = data.get(L"type", L"nope").as<std::wstring>();
 
 	if (type.compare(L"nope") == 0) {
-		cout << "BAD JSON" << endl;
+		wcout << L"BAD JSON" << endl;
 		return NULL;
 	}
 
@@ -170,15 +175,16 @@ Node* IocParser::parseNode(jsoncons::wjson data, vector<Node*>* nodes) {
 		file->hash = values[3].as<wstring>();
 
 		wstring hashType = values[2].as<wstring>();
-		if (hashType.compare(L"SHA256") == 0) {
+		transform(hashType.begin(), hashType.end(), hashType.begin(), ::towlower);
+		if (hashType.compare(L"sha256") == 0) {
 			file->hashType = FILE_HASH_SHA256_DATA;
 		}
 
-		if (hashType.compare(L"MD5") == 0) {
+		if (hashType.compare(L"md5") == 0) {
 			file->hashType = FILE_HASH_MD5_DATA;
 		}
 
-		if (hashType.compare(L"SHA1") == 0) {
+		if (hashType.compare(L"sha1") == 0) {
 			file->hashType = FILE_HASH_SHA1_DATA;
 		}
 
@@ -200,15 +206,16 @@ Node* IocParser::parseNode(jsoncons::wjson data, vector<Node*>* nodes) {
 		file->hash = values[2].as<wstring>();
 
 		wstring hashType = values[1].as<wstring>();
-		if (hashType.compare(L"SHA256") == 0) {
+		transform(hashType.begin(), hashType.end(), hashType.begin(), ::towlower);
+		if (hashType.compare(L"sha256") == 0) {
 			file->hashType = FILE_HASH_SHA256_DATA;
 		}
 
-		if (hashType.compare(L"MD5") == 0) {
+		if (hashType.compare(L"md5") == 0) {
 			file->hashType = FILE_HASH_MD5_DATA;
 		}
 
-		if (hashType.compare(L"SHA1") == 0) {
+		if (hashType.compare(L"sha1") == 0) {
 			file->hashType = FILE_HASH_SHA1_DATA;
 		}
 
@@ -235,21 +242,22 @@ Node* IocParser::parseNode(jsoncons::wjson data, vector<Node*>* nodes) {
 		process->priority = 5;
 		wjson values = data.get(L"value", L"");
 		wstring hashType(values[0].as<wstring>());
-		if (hashType.compare(L"SHA256") == 0) {
+		transform(hashType.begin(), hashType.end(), hashType.begin(), ::towlower);
+		if (hashType.compare(L"sha256") == 0) {
 			process->dataId = PROCESS_HASH_SHA256_DATA;
 		}
 
-		if (hashType.compare(L"MD5") == 0) {
+		if (hashType.compare(L"md5") == 0) {
 			process->dataId = PROCESS_HASH_MD5_DATA;
 		}
 
-		if (hashType.compare(L"SHA1") == 0) {
+		if (hashType.compare(L"sha1") == 0) {
 			process->dataId = PROCESS_HASH_SHA1_DATA;
 		}
 
 		process->found = false;
 		process->iocId = data.get(L"id", L"").as_int();
-		wstring value = data.get(L"value", L"")[0].as<wstring>();
+		wstring value = data.get(L"value", L"")[1].as<wstring>();
 		process->data = value;
 
 		return process;
@@ -309,7 +317,7 @@ Node* IocParser::parseNode(jsoncons::wjson data, vector<Node*>* nodes) {
 		return regNode;
 	}
 
-	cout << "ERRROR";
+	wcout << L"ERRROR";
 	return new Node;
 
 

@@ -4,6 +4,7 @@
 #include <string>
 #include <cstdio>
 #include <wchar.h>
+#include <iostream>
 
 #include <openssl/sha.h>
 #include <openssl/md5.h>
@@ -136,6 +137,7 @@ int HashModule::calc_sha1W(std::wstring path, std::wstring* output) {
 	}
 
 	SHA1_Final(hash, &sha1);
+	
 	hashToStringW(hash, SHA_DIGEST_LENGTH, output);
 
 	fclose(file);

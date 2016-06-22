@@ -8,11 +8,9 @@
 				{
                     "id": 3,
                     "name": "git",
-                    "type": "registry",
+                    "type": "process-name",
                     "value": [
-                        "HKEY_LOCAL_MACHINE\\SOFTWARE\\GitForWindows",
-                        "",
-                        "2.7.4"
+						"notepád.exe"
                     ],
                     "set_id": 16
                 }
