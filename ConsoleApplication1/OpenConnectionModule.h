@@ -55,14 +55,14 @@ typedef struct _MIB_UDP6TABLE_EX {
 
 class OpenConnectionModule {
 public:
-	void checkConnections(std::vector<CONNECTION_SEARCH_DATA> searchData, std::vector<FindData>* found, bool checkIpv6);
+	void checkConnections(std::vector<CONNECTION_SEARCH_DATA> searchData, std::vector<FindData>* found);
 private:
 	void checkTcpIpv4Connections(std::vector<CONNECTION_SEARCH_DATA> searchData, std::vector<FindData>* found);
 	void checkTcpIpv6Connections(std::vector<CONNECTION_SEARCH_DATA> searchData, std::vector<FindData>* found);
 	void checkUdpIpv4Connections(std::vector<CONNECTION_SEARCH_DATA> searchData, std::vector<FindData>* found);
 	void checkUdpIpv6Connections(std::vector<CONNECTION_SEARCH_DATA> searchData, std::vector<FindData>* found);
 	bool oldImp();
-
+	bool checkIpv6();
 	typedef int (WSAAPI *typeGetNameInfoW)(
 		const SOCKADDR  *pSockaddr,
 		socklen_t SockaddrLength,

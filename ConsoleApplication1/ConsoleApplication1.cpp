@@ -232,7 +232,7 @@ void checkSystem(vector<Node*> nodes, bool checkIpv6, std::vector<FailInfo>* fai
 				searchData.push_back(search);
 			}
 			OpenConnectionModule connectModule;
-			connectModule.checkConnections(searchData, &found, checkIpv6);
+			connectModule.checkConnections(searchData, &found);
 
 			for (int k = 0; k < found.size(); ++k) {
 				nodes[searchData[found[k].id].iocId]->found = true;

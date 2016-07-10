@@ -8,6 +8,7 @@
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #include <iphlpapi.h>
+#include <ws2spi.h>
 
 #include <cstdlib>
 #include <stdio.h>
@@ -20,14 +21,14 @@
 #include "VersionHelpers.h"
 
 
-void OpenConnectionModule::checkConnections(std::vector<CONNECTION_SEARCH_DATA> searchData, std::vector<FindData>* found, bool checkIpv6) {
+void OpenConnectionModule::checkConnections(std::vector<CONNECTION_SEARCH_DATA> searchData, std::vector<FindData>* found) {
 	WSADATA wsadata;
 	WSAStartup(MAKEWORD(2, 2), &wsadata);
 	std::wcout << L"TcpIPv4" << std::endl;
 	checkTcpIpv4Connections(searchData, found);
 	std::wcout << L"UdpIPv4" << std::endl;
 	checkUdpIpv4Connections(searchData, found);
-	if (checkIpv6) {
+	if (checkIpv6()) {
 		std::wcout << L"UdpIPv6" << std::endl;
 		checkUdpIpv6Connections(searchData, found);
 		std::wcout << L"TcpIPv6" << std::endl;
@@ -37,6 +38,25 @@ void OpenConnectionModule::checkConnections(std::vector<CONNECTION_SEARCH_DATA> 
 		std::wcout << L"Ipv6 skiped" << std::endl; 
 	}
 	WSACleanup();
+}
+
+bool OpenConnectionModule::checkIpv6() {
+	DWORD dwBufferLen = 0;
+	int errNo, retVal;
+	retVal = WSCEnumProtocols(NULL, NULL, &dwBufferLen, &errNo);
+	LPWSAPROTOCOL_INFOW lpProtocolInfo = NULL;
+	lpProtocolInfo = (LPWSAPROTOCOL_INFOW)malloc(dwBufferLen);
+	retVal = WSCEnumProtocols(NULL, lpProtocolInfo, &dwBufferLen, &errNo);
+
+	if (retVal == SOCKET_ERROR) {
+		return false;
+	}
+
+	for (int i = 0; i < retVal; ++i) {
+		if (lpProtocolInfo[i].iAddressFamily == AF_INET6) return true;
+	}
+
+	return false;
 }
 
 bool OpenConnectionModule::oldImp() {
