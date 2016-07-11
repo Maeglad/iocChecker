@@ -1,59 +1,20 @@
-﻿  ConsoleApplication1.cpp
-c:\users\user\documents\visual studio 2015\projects\consoleapplication1\consoleapplication1\jsoncons\json_parser.hpp(161): warning C4003: not enough actual parameters for macro 'max'
-c:\users\user\documents\visual studio 2015\projects\consoleapplication1\consoleapplication1\MutantModule.h(56): warning C4091: 'typedef ': ignored on left of 'OBJECT_INFORMATION_CLASS' when no variable is declared
-c:\users\user\documents\visual studio 2015\projects\consoleapplication1\consoleapplication1\ProcessModule.h(6): warning C4005: '_WIN32_WINNT': macro redefinition
-  C:\Program Files (x86)\Microsoft SDKs\Windows\v7.1A\include\SDKDDKVer.h(197): note: see previous definition of '_WIN32_WINNT'
-ConsoleApplication1.cpp(111): warning C4018: '<': signed/unsigned mismatch
-ConsoleApplication1.cpp(118): warning C4018: '<': signed/unsigned mismatch
-ConsoleApplication1.cpp(129): warning C4018: '<': signed/unsigned mismatch
-ConsoleApplication1.cpp(173): warning C4018: '<': signed/unsigned mismatch
-ConsoleApplication1.cpp(195): warning C4018: '<': signed/unsigned mismatch
-ConsoleApplication1.cpp(208): warning C4018: '<': signed/unsigned mismatch
-ConsoleApplication1.cpp(224): warning C4018: '<': signed/unsigned mismatch
-ConsoleApplication1.cpp(237): warning C4018: '<': signed/unsigned mismatch
-ConsoleApplication1.cpp(250): warning C4018: '<': signed/unsigned mismatch
-ConsoleApplication1.cpp(263): warning C4018: '<': signed/unsigned mismatch
-ConsoleApplication1.cpp(278): warning C4018: '<': signed/unsigned mismatch
-ConsoleApplication1.cpp(291): warning C4018: '<': signed/unsigned mismatch
-ConsoleApplication1.cpp(305): warning C4018: '<': signed/unsigned mismatch
-ConsoleApplication1.cpp(317): warning C4018: '<': signed/unsigned mismatch
-ConsoleApplication1.cpp(332): warning C4018: '<': signed/unsigned mismatch
-ConsoleApplication1.cpp(347): warning C4018: '<': signed/unsigned mismatch
-ConsoleApplication1.cpp(362): warning C4018: '<': signed/unsigned mismatch
-ConsoleApplication1.cpp(378): warning C4018: '<': signed/unsigned mismatch
-  OpenConnectionModule.cpp
-OpenConnectionModule.cpp(97): warning C4018: '<': signed/unsigned mismatch
-OpenConnectionModule.cpp(116): warning C4018: '<': signed/unsigned mismatch
-OpenConnectionModule.cpp(173): warning C4018: '<': signed/unsigned mismatch
-OpenConnectionModule.cpp(243): warning C4018: '<': signed/unsigned mismatch
-OpenConnectionModule.cpp(255): warning C4018: '<': signed/unsigned mismatch
-OpenConnectionModule.cpp(306): warning C4018: '<': signed/unsigned mismatch
-OpenConnectionModule.cpp(381): warning C4018: '<': signed/unsigned mismatch
-OpenConnectionModule.cpp(385): warning C4244: '=': conversion from 'DWORD' to 'USHORT', possible loss of data
-OpenConnectionModule.cpp(401): warning C4018: '<': signed/unsigned mismatch
-OpenConnectionModule.cpp(448): warning C4244: '=': conversion from 'DWORD' to 'USHORT', possible loss of data
-OpenConnectionModule.cpp(457): warning C4018: '<': signed/unsigned mismatch
-OpenConnectionModule.cpp(521): warning C4018: '<': signed/unsigned mismatch
-OpenConnectionModule.cpp(525): warning C4244: '=': conversion from 'DWORD' to 'USHORT', possible loss of data
-OpenConnectionModule.cpp(534): warning C4018: '<': signed/unsigned mismatch
-OpenConnectionModule.cpp(580): warning C4244: '=': conversion from 'DWORD' to 'USHORT', possible loss of data
-OpenConnectionModule.cpp(585): warning C4018: '<': signed/unsigned mismatch
-OpenConnectionModule.cpp(648): warning C4018: '<': signed/unsigned mismatch
-OpenConnectionModule.cpp(666): warning C4018: '<': signed/unsigned mismatch
-OpenConnectionModule.cpp(729): warning C4018: '<': signed/unsigned mismatch
-OpenConnectionModule.cpp(741): warning C4018: '<': signed/unsigned mismatch
-OpenConnectionModule.cpp(647): warning C4390: ';': empty controlled statement found; is this the intent?
-OpenConnectionModule.cpp(728): warning C4390: ';': empty controlled statement found; is this the intent?
-OpenConnectionModule.cpp(816): warning C4018: '<': signed/unsigned mismatch
-OpenConnectionModule.cpp(820): warning C4244: '=': conversion from 'DWORD' to 'USHORT', possible loss of data
-OpenConnectionModule.cpp(836): warning C4018: '<': signed/unsigned mismatch
-OpenConnectionModule.cpp(908): warning C4018: '<': signed/unsigned mismatch
-OpenConnectionModule.cpp(913): warning C4244: '=': conversion from 'DWORD' to 'USHORT', possible loss of data
-OpenConnectionModule.cpp(921): warning C4018: '<': signed/unsigned mismatch
+﻿  RegistryModule.cpp
+RegistryModule.cpp(2): warning C4005: 'UNICODE': macro redefinition
+  RegistryModule.cpp(2): note: command-line arguments:  see previous definition of 'UNICODE'
+RegistryModule.cpp(2): warning C4603: 'UNICODE': macro is not defined or definition is different after precompiled header use
+  RegistryModule.cpp(2): note: Add macro to precompiled header instead of defining here
+  RegistryModule.cpp(5): note: use of precompiled header
+RegistryModule.cpp(58): warning C4018: '<': signed/unsigned mismatch
+RegistryModule.cpp(87): warning C4018: '<': signed/unsigned mismatch
+RegistryModule.cpp(193): warning C4018: '<=': signed/unsigned mismatch
+RegistryModule.cpp(227): warning C4018: '<': signed/unsigned mismatch
+RegistryModule.cpp(349): warning C4293: '<<': shift count negative or too big, undefined behavior
+RegistryModule.cpp(395): warning C4018: '<': signed/unsigned mismatch
+RegistryModule.cpp(443): warning C4101: 'hProcess': unreferenced local variable
   Generating code
-  4 of 4356 functions ( 0.1%) were compiled, the rest were copied from previous compilation.
-    2 functions were new in current compilation
-    0 functions had inline decision re-evaluated but remain unchanged
+  2 of 4359 functions ( 0.0%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    9 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
 libeay32MT.lib(mem_clr.obj) : warning LNK4099: PDB 'libmt.pdb' was not found with 'libeay32MT.lib(mem_clr.obj)' or at 'C:\Users\User\Documents\Visual Studio 2015\Projects\ConsoleApplication1\Release\libmt.pdb'; linking object as if no debug info
 libeay32MT.lib(md5_dgst.obj) : warning LNK4099: PDB 'libmt.pdb' was not found with 'libeay32MT.lib(md5_dgst.obj)' or at 'C:\Users\User\Documents\Visual Studio 2015\Projects\ConsoleApplication1\Release\libmt.pdb'; linking object as if no debug info

@@ -9,6 +9,8 @@
 #include <regex>
 #include <limits.h>
 #include <sstream>
+#include <stdlib.h>
+#include <algorithm>
 
 struct keyAndName {
 	HKEY hKey;
@@ -260,7 +262,7 @@ bool RegistryModule::checkValue(HKEY hKey, REGISTRY_SEARCH_DATA data, bool regex
 			return true;
 		}
 
-		if (compareData(data.valueValue, valueData, dataSize, valueType)) {
+		if (compareData(data.valueValue, valueData, dataSize, valueType, regexp)) {
 			valName->append(valueName);
 			delete valueData;
 			delete valueName;
@@ -273,176 +275,88 @@ bool RegistryModule::checkValue(HKEY hKey, REGISTRY_SEARCH_DATA data, bool regex
 
 	return false;
 }
-
-bool RegistryModule::isDWORD(std::wstring s) {
-	if (s.size() > 10)return false; // 4294967295 max dword
-	if (s.size() == 10)
-		if (s.compare(L"4294967295") == -1)return false;
-	// realne nemusim kontorlovat
-	// ci to je skutocne int staci sa len pozriet ci ma vsetky cifry cisla
-	// a ci je pred 4,294,967,295 a ci je kratsi
-	// ak je kratsi resp rovny tak bud je to int a vtedy compare vrati 1, resp 0 ak sa rovna
-	// ak nie vrati -1
-	for (int i = 1; i < s.size(); ++i) {
-
-		if (isdigit(s[i]) == false)return false;
+/*
+std::wstring intToHex(int val) {
+	int upper = val / 16;
+	int lower = val % 16;
+	std::wstring retVal;
+	if (upper < 10) {
+		retVal.append()
 	}
-	return true;
-}
+}*/
 
-bool RegistryModule::isQWORD(std::wstring s) {
-	if (s.size() > 20)return false; // 18446744073709551615 max qword
-	if (s.size() == 20)
-		if (s.compare(L"18446744073709551615") == -1)return false;
-	// taky isty reasoning ako pri isDword
-	for (int i = 1; i < s.size(); ++i) {
+bool RegistryModule::compareData(std::wstring s, unsigned char* data, int dataSize, DWORD valueType, bool regexp) {
 
-		if (isdigit(s[i]) == false)return false;
-	}
-	return true;
-}
-
-int RegistryModule::getInt(wchar_t c) {
-	return c - '0';
-}
-DWORD RegistryModule::toDWORD(std::wstring s) {
-	DWORD ret = 0;
-	if (isdigit(s[0])) ret = getInt(s[0]);
-
-	for (int i = 1; i < s.length(); ++i) {
-		ret *= 10;
-		ret += getInt(s[i]);
-	}
-
-	return ret;
-}
-
-int64_t RegistryModule::toQWORD(std::wstring s) {
-	int64_t ret = 0;
-
-
-	if (isdigit(s[0])) ret = getInt(s[0]);
-
-	for (int i = 0; i < s.length(); ++i) {
-		ret *= 10;
-		ret += getInt(s[i]);
-	}
-
-	return ret;
-}
-
-wchar_t RegistryModule::hexToChar(std::wstring byte) {
-	int ret = 0;
-	for (int i = 0; i < 2; ++i) {
-		if (isdigit(byte[i])) {
-			if(i == 0){
-				ret += getInt(byte[i]) * 16;
-			}
-			if (i == 1) {
-				ret += getInt(byte[i]);
-			}
+	if ((valueType == REG_BINARY) || (valueType == REG_NONE)) {
+		std::string dataHex;
+		for (int i = 0; i < dataSize; ++i) {
+			unsigned char c = data[i];
+			int val = (int)c;
+			char buffer[10];
+			_itoa(val, buffer, 16);
+			dataHex.append(buffer);
+		}
+		if (regexp) {
+			std::wstring wsDataHex(dataHex.begin(), dataHex.end());
+			std::wregex e;
+			std::transform(wsDataHex.begin(), wsDataHex.end(), wsDataHex.begin(), ::towlower);
+			std::transform(s.begin(), s.end(), s.begin(), ::towlower);
+			e.assign(s.c_str());
+			
+			return std::regex_match(wsDataHex, e);
 		}
 		else {
-			if (byte[i] == 'a') {
-				if (i == 0) {
-					ret += 10 * 16;
-				}
-				if (i == 1) {
-					ret += 10;
-				}
-			}
-			if (byte[i] == 'b') {
-				if (i == 0) {
-					ret += 11 * 16;
-				}
-				if (i == 1) {
-					ret += 11;
-				}
-			}
-			if (byte[i] == 'c') {
-				if (i == 0) {
-					ret += 12 * 16;
-				}
-				if (i == 1) {
-					ret += 12;
-				}
-			}
-			if (byte[i] == 'd') {
-				if (i == 0) {
-					ret += 13 * 16;
-				}
-				if (i == 1) {
-					ret += 13;
-				}
-			}
-			if (byte[i] == 'e') {
-				if (i == 0) {
-					ret += 14 * 16;
-				}
-				if (i == 1) {
-					ret += 14;
-				}
-			}
-			if (byte[i] == 'f') {
-				if (i == 0) {
-					ret += 15 * 16;
-				}
-				if (i == 1) {
-					ret += 15;
-				}
-			}
-
-				
+			std::wstring wsDataHex(dataHex.begin(), dataHex.end());
+			std::transform(wsDataHex.begin(), wsDataHex.end(), wsDataHex.begin(), ::towlower);
+			std::transform(s.begin(), s.end(), s.begin(), ::towlower);
+			if (s.compare(wsDataHex) == 0) return true;
 		}
-	}
-	return (wchar_t)ret;
-}
-bool RegistryModule::compareData(std::wstring s, unsigned char* data, int dataSize, DWORD valueType) {
-	int searchLength = s.size();
-
-	if (valueType == REG_BINARY || REG_NONE) {
-		if (s.size() % 2)return false;
-		if (dataSize != (searchLength / 2))return false;
-		int len = s.length();
-		std::wstring compareData;
-		for (int i = 0; i< len; i += 2)
-		{
-			std::wstring byte = s.substr(i, 2);
-			 
-			wchar_t chr = hexToChar(byte);
-			compareData.push_back(chr);
-		}
-		for (int i = 0; i < dataSize; ++i) {
-			if (data[i] != compareData[i])return false;
-		}
-		return true;
-		
+		return false;
 	}
 	DWORD dwValue;
 	if ((valueType == REG_DWORD) || (valueType == REG_DWORD_LITTLE_ENDIAN)) {
-		if (isDWORD(s) == false)return false;
 		dwValue = (data[3] << 24) | (data[2] << 16) | (data[1] << 8) | (data[0]);
-		DWORD val = toDWORD(s);
-		if (val == dwValue) return true;
+		std::wstring val = std::to_wstring(dwValue);
+		if (regexp) {
+			std::wregex e;
+			e.assign(s.c_str());
+			return std::regex_match(val.c_str(), e);
+		}
+		else {
+			if (s.compare(val) == 0) return true;
+		}
 		return false;
 	}
 
 	if (valueType == REG_DWORD_BIG_ENDIAN) {
-		if (isDWORD(s) == false)return false;
+	
 		dwValue = (data[0] << 24) | (data[1] << 16) | (data[2] << 8) | (data[3]);
-		DWORD val = toDWORD(s);
-		if (val == dwValue) return true;
+		std::wstring val = std::to_wstring(dwValue);
+		if (regexp) {
+			std::wregex e;
+			e.assign(s.c_str());
+			return std::regex_match(val.c_str(), e);
+		}
+		else {
+			if (s.compare(val) == 0) return true;
+		}
 		return false;
 	}
 
 	unsigned long long qwValue; // QWORD nemam header ale def je takyto
 	// Windows systemy su littleENdian tkaze je to jedno
 	if ((valueType == REG_QWORD) || (valueType == REG_QWORD_LITTLE_ENDIAN)) {
-		if (isQWORD(s) == false) return false;
 		qwValue = (data[7] << 56) | (data[6] << 48) | (data[5] << 40) | (data[4] << 32) |
 			(data[3] << 24) | (data[2] << 16) | (data[1] << 8) | (data[0]);
-		unsigned long long val = toQWORD(s);
-		if (val == qwValue) return true;
+		std::wstring val = std::to_wstring(qwValue);
+		if (regexp) {
+			std::wregex e;
+			e.assign(s.c_str());
+			return std::regex_match(val.c_str(), e);
+		}
+		else {
+			if (s.compare(val) == 0) return true;
+		}
 		return false;
 	}
 
@@ -450,7 +364,15 @@ bool RegistryModule::compareData(std::wstring s, unsigned char* data, int dataSi
 		
 		
 		std::wstring vData = std::wstring((const wchar_t*)data);
-		if (wcscmp(s.c_str(), vData.c_str()) == 0) return true;
+		if (regexp) {
+			std::wregex e;
+			e.assign(s);
+			
+			return std::regex_match(vData, e);
+		}
+		else {
+			if (wcscmp(s.c_str(), vData.c_str()) == 0) return true;
+		}
 		return false;
 	}
 
@@ -477,11 +399,18 @@ bool RegistryModule::compareData(std::wstring s, unsigned char* data, int dataSi
 		
 		s.append(L" ");
 
-
-		if (wcscmp(s.c_str(), wsData.c_str()) != 0) {
-			return false;
+		if (regexp) {
+			std::wregex e;
+			e.assign(s);
+			return std::regex_match(wsData, e);
 		}
+		else {
 
+
+			if (wcscmp(s.c_str(), wsData.c_str()) != 0) {
+				return false;
+			}
+		}
 		return true;
 
 	}

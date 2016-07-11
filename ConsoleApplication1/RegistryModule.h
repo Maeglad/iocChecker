@@ -66,16 +66,9 @@ public:
 	void checkRegistry(std::vector<REGISTRY_SEARCH_DATA> searchData, std::vector<FindData>* found, std::vector<FailInfo>* fails);
 private:
 	bool checkValue(HKEY hKey, REGISTRY_SEARCH_DATA data, bool regexp, std::wstring* valName);
-	int checkExactKey(REGISTRY_SEARCH_DATA data);
 	bool FindKeyByNameOrValue(std::vector<REGISTRY_SEARCH_DATA> searchData, HKEY baseKey, std::wstring baseKeyName, std::wstring name, std::wstring path, std::vector<FindData>* found, std::vector<FailInfo>* fails);
-	bool isDWORD(std::wstring s);
-	bool isQWORD(std::wstring s);
-	int getInt(wchar_t c);
-	DWORD toDWORD(std::wstring s);
-	int64_t toQWORD(std::wstring s);
 	// bool compareData(std::wstring s, int searchLength, unsigned char* data, int dataSize, DWORD valueType);
-	bool compareData(std::wstring s, unsigned char* data, int dataSize, DWORD valueType);
-	wchar_t hexToChar(std::wstring byte);
+	bool compareData(std::wstring s, unsigned char* data, int dataSize, DWORD valueType, bool regexp);
 	BOOL SetPrivilege(HANDLE hToken, LPCTSTR Privilege, BOOL bEnablePrivilege);
 	int DropPrivileges();
 	int GetPrivileges();
